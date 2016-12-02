@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+
+{% if next %}
+    {% if user.is_authenticated %}
+
+<p>Your account doesn't have access to this page. To proceed,
+    please login with an account that has access.</p>
+    {% else %}
+
+<p>Please login to see this page.</p>
+    {% endif %}
+{% endif %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2">
+            <div class="panel panel-primary ">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{{ venue }} Pending Booking Details</h3>
+                </div>
+                <div class="panel-body">
+
+
+                    {% csrf_token %}
+                    {% if object_list %}
+                        <p class="bs-component">
+                        <form action="" method="get" id="form1" >
+                           
+                                {% for coll_group in object_list  %}
+										
+                                            {%if coll_group|length > 1 %}
+                                    <div class="panel panel-warning" >
+										<div class="alert alert-warning">
+											<h4>Collisions Exist in this group</h4>
+											<p>Approving any one will deny the others.</p>
+										</div>
+										
+                                             {% else %}
+									<div class="panel panel-info" >
+                                        <div class="alert alert-success">
+										<h4>	No Conflicts in this group </h4>
+										<p> Can be approved immediately. </p>
+										</div>
+										
+                                            {% endif %}
+											<table class="table table-striped">
+												<thead>
+													<th>Booking ID</th>
+													<th>Start Time</th>
+													<th>End Time</th>
+													<th>User</th>
+													<th></th>
+													
+												</thead>
+											 {% for x in coll_group %}
+												<tr>
+											  <td> {{ x }} </td>
+												<td> {{ x.starttime }} </td>
+												<td> {{ x.endtime }} </td>
+												<td> {{ x.facultybook_set.all.0.facultyid }} {{x.studentbook_set.all.0.usn}}</td>
+												<td> <input class="btn btn-success" type="submit" value="Approve {{ x.idbookrequest }}" name="Approve" id="{{ x.idbookrequest }}" /></td>
+												</tr>
+											
+											{% endfor %}
+											</table>
+
+									
+
+									
+                                    </div>
+                                {% endfor %}
+                            
+                        </form>
+                        <div class="col-md-6 center-block">
+                            <a class="button btn btn-info pull-right center-block" href="/rooms/approval/">BACK</a>
+                        </div>
+                        </p>
+
+                        <input type="hidden" name="next" value="{{ next }}" />
+                    {% else %}
+                    <h2>All Pending Requests Done </h2>
+                        <div class="row">
+                        <div class="col-md-4">
+                    <form action="/rooms/approval">
+                        <input type="submit" class="btn btn-info" value="RETURN "/>
+                    </form>
+                            </div>
+                     <div class="col-md-4">
+                    <form action="/home">
+                        <input type="submit" class="btn btn-info" value="HOME"/>
+                    </form>
+                        </div>
+                        </div>
+                {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+
+
+<script>
+{% if not user.is_authenticated %}
+$("ul.nav.navbar-nav.navbar-right").css("display","none");
+{% endif %}
+</script>
+
+{% endblock %}

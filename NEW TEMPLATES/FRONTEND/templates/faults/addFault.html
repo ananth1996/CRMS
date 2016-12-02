@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Enter Fault Details </h3>
+                </div>
+                <div class="panel-body">
+                    <form method="post" action="{% url 'addFault' %}">
+{% csrf_token %}
+
+                        <p class="bs-component">
+                            <table class="table table-striped">
+                                {% if form.errors %}
+                                    <ul class="errorlist">
+                                    {%for field ,errors in form.errors.items%}
+                                    {% for error in errors %}
+                                        <li  style="color: red;">{{ error }}</li>
+                                    {% endfor %}
+                                    {% endfor %}
+                                    </ul>
+
+                                {% endif %}
+                                {% for x in form  %}
+                                    <tr>
+									<div class="form-group">
+                                        <td>{{ x.label_tag }}</td>
+                                        <td>{{ x }}</td>
+									</div>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </p>
+                        <p class="bs-component">
+                            <center>
+                                <input class="btn btn-info btn-sm" type="submit" value="save" />
+                            </center>
+                        </p>
+                        <input type="hidden" name="next" value="{{ next }}" />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+
+
+<script>
+{% if not user.is_authenticated %}
+$("ul.nav.navbar-nav.navbar-right").css("display","none");
+{% endif %}
+</script>
+
+{% endblock %}

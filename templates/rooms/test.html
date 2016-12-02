@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+{% if messages %}
+
+<ul class="messages">
+    {% for message in messages %}
+    <h1 style="color : #ba2121; align-self: center;" {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</h1>
+    {% endfor %}
+</ul>
+
+
+{% endif %}
+
+{% if next %}
+    {% if user.is_authenticated %}
+
+<p>Your account doesn't have access to this page. To proceed,
+    please login with an account that has access.</p>
+    {% else %}
+
+<p>Please login to see this page.</p>
+    {% endif %}
+{% endif %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="panel panel-info" style="height: 100%">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Filter Venues</h3>
+                </div>
+                <div class="panel-body">
+
+                    {% csrf_token %}
+                        <form action="" method="get" class="form">
+                        {% for x in filter.form %}
+                            <div class="form form-group">
+                            <div class="form form-label">{{ x.label }}</div>
+                            <div class="form form-item"> {{ x }}</div>
+                            </div>
+                        {% endfor %}
+
+                    <input type="submit" class="btn btn-info pull-right" value="Filter"/>
+                    </form>
+                        <input type="hidden" name="next" value="{{ next }}" />
+
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-lg-8 ">
+            <div class="panel panel-primary ">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Venue Details </h3>
+                </div>
+                <div class="panel-body">
+                {% if details %}
+                    <table class="table table-striped table-responsive">
+                        <thead>
+                            <th class="tab-pane"> Venue Name </th>
+                            <th class="tab-pane"> Department</th>
+                            <th class="tab-pane"> Capacity </th>
+                            <th class="tab-pane">Equipment Details </th>
+                            <th>&nbsp</th>
+                        </thead>
+
+                        {% for model,equipment in details %}
+                            <tr >
+
+                                <td><a href="/rooms/bookVenue/{{ model.venueid }}{% if filter.data.startdate%}/{{ filter.data.startdate }}{% else %}/{{ now }}{% endif %}{% if filter.data.enddate%}/{{ filter.data.enddate }}{% else %}/{{ now }}{% endif %}" >
+                                    {{ model}}
+                                </a>
+                                <td> {{ model.dno.dname }}</td>
+                                <td> {{ model.capacity }}</td>
+
+
+
+                                {% if equipment %}
+                                    <td>
+                                    {% for x in equipment  %}
+
+                                            <p>{{ x.etypeid.ename }} qty: {{ x.quantity }}</p>
+
+
+
+                                    {% endfor %}
+                                    </td>
+
+                                {% else %}
+                                    <td>No Equipment</td>
+                                {% endif %}
+                                {% if user.userprofile.userType == 'SA' %}
+                                <td><a class="button btn btn-success" href="/rooms/editVenue/{{ model.venueid }}">Edit</a></button> </td>
+                                    {% else %}
+                                <td><a class="button btn btn-info" href="/rooms/bookVenue/{{ model.venueid }}{% if filter.data.startdate%}/{{ filter.data.startdate }}{% else %}/{{ now }}{% endif %}{% if filter.data.enddate%}/{{ filter.data.enddate }}{% else %}/{{ now }}{% endif %}">Book Venue</a></button> </td>
+                                {% endif %}
+
+
+
+
+                            </tr>
+
+                        {% endfor %}
+                    </table>
+                {% else %}
+                <h3>No Venues Available</h3>
+                {% endif %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+
+
+
+
+<script>
+{% if not user.is_authenticated %}
+$("ul.nav.navbar-nav.navbar-right").css("display","none");
+{% endif %}
+</script>
+
+
+{% endblock %}

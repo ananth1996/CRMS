@@ -1,0 +1,80 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html>
+    <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <!--link href="{{ STATIC_ROOT }}css/bootstrap.css" rel="stylesheet" type="text/css"/-->
+    
+    <script src = {% static 'js/jquery.min.js' %}></script>
+   <!-- <script src="{{ STATIC_ROOT }}js/bootstrap.js"></script>-->
+    
+    {{ form.media }}
+        <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>RVCE Room and Resource Manager</title>
+                <!-- Core CSS - Include with every page -->
+                <link href="{% static 'css/bootstrap.yeti.min.css' %}" rel="stylesheet" type='text/css' >
+                </head>
+                <body>
+                    <nav class="navbar navbar-default navbar-inverse">
+                        <div class="container-fluid">
+                            <div class="navbar-header">
+                                <a class="navbar-brand" href="/home">R<sup>3</sup> Manager</a>
+                            </div>
+                            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                                <ul class="nav navbar-nav navbar-right">
+                                    <li class="dropdown">
+										{% if user.is_authenticated %}
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ user.username }} Account<span class="caret"></span>
+                                        </a>
+                                        <ul class="dropdown-menu" role="menu">
+                                            <li>
+                                                <a href="/home">Home</a>
+                                            </li>
+                                            <li>
+                                                <a href="/rooms/viewVenue">View Venues</a>
+                                            </li>
+                                            <li>
+                                                <a href="/faults/addFault">Report Fault</a>
+                                            </li>
+											{% if user.userprofile.userType == 'SA' or user.userprofile.userType == 'P'%}
+                                            <li>
+                                                <a href="/faults/viewFault">View Faults</a>
+                                            </li>
+											{%endif%}
+
+											{%if user.userprofile.userType == 'SA'%}
+                                            <li>
+                                                <a href="/rooms/addVenue">Add Venues</a>
+                                            </li><li>
+                                                <a href="/rooms/viewVenue">Edit Venues</a>
+                                            </li>
+											{%endif%}
+                                            <li class="divider"></li>
+                                            <li>
+                                                <a href="/log/logout">Logout</a>
+                                            </li>
+                                        </ul>
+																				{%endif%}
+
+                                    </li>
+
+								</ul>
+                            </div>
+                        </div>
+                    </nav>
+
+                {% block content %}
+                {% endblock %}
+
+
+                    <!-- Core Scripts - Include with every page -->
+                    <script src = "{% static 'js/jquery.min.js' %}"></script>
+                    <script src = "{% static 'js/bootstrap.min.js' %}"></script>
+        {% block javascript %}
+        {% endblock %}
+
+
+            </body>
+        </html>

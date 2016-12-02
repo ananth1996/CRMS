@@ -1,0 +1,75 @@
+	{% extends 'base.html' %}
+
+
+{% block content %}
+
+
+{% if next %}
+    {% if user.is_authenticated %}
+
+<p>Your account doesn't have access to this page. To proceed,
+    please login with an account that has access.</p>
+    {% else %}
+
+<p>Please login to see this page.</p>
+    {% endif %}
+{% endif %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2">
+            <div class=" panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Faults Raised</h3>
+                </div>
+                <div class="panel-body">
+
+                    {% csrf_token %}
+
+                        <p class="bs-component">
+                            <table class="table table-striped">
+                                <thead>
+                                <th> FaultID </th>
+                                <th> Venue </th>
+								<th> Equipment Type </th>
+								<th> Status </th>
+                                <th></th>
+                                </thead>
+                                {% for model in fault_obj  %}
+									<tr>
+                                        <td>{{ model}}</td>
+                                        <td> {{ model.venueid }}</td>
+										<td> {{ model.etype}} </td>
+										<td> {{ model.status}} </td>
+                                        {% if user.userprofile.userType == 'SA' %}
+                                            <td> <a class="button btn btn-primary" href="/faults/editFault/{{ model.idfault }}">Edit</a></td>
+                                        {% endif %}
+
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        <div class="col-md-6 center-block">
+                            <a class="button btn btn-info pull-right center-block" href="/home">BACK</a>
+                        </div>
+                        </p>
+
+                        <input type="hidden" name="next" value="{{ next }}" />
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+
+
+<script>
+{% if not user.is_authenticated %}
+$("ul.nav.navbar-nav.navbar-right").css("display","none");
+{% endif %}
+</script>
+
+{% endblock %}

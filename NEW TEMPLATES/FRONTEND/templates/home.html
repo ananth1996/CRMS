@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if messages %}
+
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+
+
+{% endif %}
+
+<div class="container">
+    
+       
+    
+	<div class="row">
+		<div class="col-md-3" rowspan=5>
+		<ul class="nav nav-pills nav-stacked ">
+  			<li class="active"><a href="#">Home</a></li>
+  			{% if user.userprofile.userType == 'SA' or user.userprofile.userType == 'P' %}
+  			<li><a href="/faults/viewFaults">Faults</a></li>
+  			{% endif %}
+  			<li class="dropdown">
+    			<a class="dropdown-toggle" data-toggle="dropdown" href="#">Venues <span class="caret"></span></a>
+   				<ul class="dropdown-menu">
+			      <li><a href="/rooms/viewVeues">View Venues</a></li>
+			      {% if user.userprofile.userType == 'SA' %}
+			      <li><a href="/rooms/addVenues">Add Venues</a></li>
+			      <li><a href="/rooms/addDept">Add Department</a></li>
+			      <li class="divider"></li>
+			      <li><a href="#">Pending Approvals</a></li>
+    				{% endif %}
+    			</ul>
+  			</li>
+		</ul>
+		</div>
+		<div class="col-md-9">
+    <div class="container">
+    <div class = "row">
+			 <div class="jumbotron col-md-9">
+            <h1>Hello</h1>
+            <p>You are on your Dashboard</p>
+        </div>
+    </div>
+    <div class = "row">
+          <h2> My Bookings </h2>
+          {% if booking %}
+            <table class="table table-striped">
+              <thead>
+                      <th>Booking ID</th>
+                      <th>Venue </th>
+                      <th>Start Timw</th>
+                      <th>End Time </th>
+                      <th>Status</th>
+
+                  </thead>
+              {% for i in booking %}
+                  <tr>
+                    <td>{{ i.idbookrequest }}</td>
+                    <td>{{ i.venueid }}</td>
+                    <td>{{ i.starttime }}</td>
+                    <td>{{ i.endtime }}</td>
+                    <td>{{ i.status }}</td>
+                    <td><a href="" class="btn btn-error">Cancel</a></td>
+                    <td><a href="" class="btn btn-success">Print</a></td>
+                  </tr>
+              {% endfor%}
+            </table>
+          {% else %}
+            <p class="success"> No bookings yet! </p>
+          {% endif %}
+    </div>
+    <div class = "row">
+          <h2> My Requests </h2>
+          {% if requests %}
+            <table class="table table-striped">
+              <thead>
+                      <th>Request ID</th>
+                      <th>Equipment ID </th>
+                      <th>Status</th>
+
+                  </thead>
+              {% for i in requests %}
+                  <tr>
+                    <td>{{ i.reqid }}</td>
+                    <td>{{ i.etypeid }}</td>
+                    <td>{{ i.status }}</td>
+                    <td><a href="" class="btn btn-success">Print</a></td>
+                  </tr>
+              {% endfor%}
+            </table>
+          {% else %}
+            <p class="success"> No requests yet! </p>
+          {% endif %}
+          
+    </div>
+    </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+
+{% if next %}
+    {% if user.is_authenticated %}
+
+<p>Your account doesn't have access to this page. To proceed,
+    please login with an account that has access.</p>
+    {% else %}
+
+<p>Please login to see this page.</p>
+    {% endif %}
+{% endif %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-4 col-lg-offset-4">
+            <div class="panel panel-default ">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Venue Details</h3>
+                </div>
+                <div class="panel-body">
+
+                    {% csrf_token %}
+
+                        <p class="bs-component">
+                            <table class="table">
+                                <tr>
+                                    <td class="tab-pane"> Venue Name </td>
+                                    <td class="tab-pane"> Department</td>
+                                    <td class="tab-pane"> Capacity </td>
+                                </tr>
+                                {% for model in object_list  %}
+                                    <tr >
+                                        <td><a href="/rooms/bookVenue/{{ model.venueid }}" >{{ model}}</a>
+                                        <td> {{ model.dno }}</td>
+                                        <td> {{ model.capacity }}</td>
+                                        {% if user.userprofile.userType == 'SA' %}
+                                         <td> <button><a href="/rooms/editVenue/{{ model.venueid }}">Edit</a></button> </td>
+                                        {% endif %}
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </p>
+
+                        <input type="hidden" name="next" value="{{ next }}" />
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+
+
+<script>
+{% if not user.is_authenticated %}
+$("ul.nav.navbar-nav.navbar-right").css("display","none");
+{% endif %}
+</script>
+
+{% endblock %}

@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-lg-3" rowspan=100>
+		<ul class="nav nav-pills nav-stacked ">
+
+  				<li class="active"><a href="/">Home</a></li>
+                <li><a href="/faults/addFault">Report Faulty Equipment.</a></li>
+            {% if user.userprofile.userType == 'S' or user.userprofile.userType == 'F' %}
+                <li class=""><a href="/rooms/viewVenue/">View Venues</a></li>
+                <li class=""><a href="/req/addReq/">Make a Request</a></li>
+            {% endif %}
+
+  			{% if user.userprofile.userType == 'SA'  %}
+
+            <li class="dropdown">
+    			<a class="dropdown-toggle" data-toggle="dropdown" href="#">View...<span class="caret"></span></a>
+   		            		<ul class="dropdown-menu">
+		                           <li><a href="/faults/viewFault">View Unresolved Faults &nbsp<span class="badge"> {{ badges.faults }}</span></a></li>
+				                   <li><a href="/rooms/approval">Pending Approvals &nbsp<span class="badge">{{ badges.pending }}</span></a></li>
+				                   <li><a href="/req/viewReq">Pending Resource Requests &nbsp<span class="badge">{{ badges.req }}</span></a></li>
+
+                                   <li><a href="/rooms/viewVenue">View Venues</a></li>
+
+                            </ul>
+            </li>
+            <li class="dropdown">
+    			<a class="dropdown-toggle" data-toggle="dropdown" href="#">Add...<span class="caret"></span></a>
+   		            		<ul class="dropdown-menu">
+		                       <li><a href="/rooms/addVenue">Add Venues</a></li>
+			                   <li><a href="/rooms/addDept">Add Department</a></li>
+                               <li class="divider"></li>
+                                <li><a href="/rooms/addEquip">Add Equipment</a></li>
+                                <li><a href="/rooms/addRes">Add Resources</a></li>
+                                <li class="divider"></li>
+                                <li><a href="/log/addStud">Add Student</a></li>
+                                <li><a href="/log/addFac">Add Faculty</a></li>
+                            </ul>
+            </li>
+                <li class="dropdown">
+    			<a class="dropdown-toggle" data-toggle="dropdown" href="#">Report...<span class="caret"></span></a>
+   		            		<ul class="dropdown-menu">
+		                           <li><a href="/print/faults" class="btn btn-link">Generate Faulty Equipment Summary</a></li>
+                                    <li><button type="button" class="btn btn-link" data-toggle="modal" data-target="#myModal">Generate Schedule of Events</button></li>
+                            </ul>
+            </li>
+
+        {% endif %}
+                                {% if user.userprofile.userType == 'P' %}
+
+                                   <li><a href="/faults/viewFault">View unresolved Faults &nbsp<span class="badge"> {{ badges.faults }}</span></a></li>
+
+			      	{% endif %}
+        </ul>
+		</div>
+		<div class="col-lg-9">
+             <div class="container-fluid">
+
+                        {% if messages %}
+                        <div class="row">
+                        <div class = "col-lg-12">
+                            {% for message in messages %}
+                            <div {% if message.tags %} class="alert alert-dismissable alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}"{% endif %}>
+                             <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong>{{ message }}</strong></div>
+                            {% endfor %}
+                        </div>
+                        </div>
+
+                        {% endif %}
+                <div class = "row">
+			        <div class="jumbotron col-lg-12">
+                        <h1>Hello</h1>
+                        <p>You are on your Dashboard</p>
+                    </div>
+                </div>
+                {% if user.userprofile.userType == 'S' or user.userprofile.userType == 'F' %}
+                <div class = "row">
+                      <div class="col-lg-12">
+
+                                <h2> My Bookings </h2>
+                      </div>
+                </div>
+
+               <div class = "row">
+                        {% if booking %}
+                            <div class="col-lg-12">
+                    <table class="table table-striped ">
+                      <thead>
+                              <th>Booking ID</th>
+                              <th>Venue </th>
+                              <th>Start Time</th>
+                              <th>End Time </th>
+                              <th>Status</th>
+
+                          </thead>
+                      {% for i in booking %}
+                          <tr>
+
+                            <td>{{ i.idbookrequest }}</td>
+                            <td>{{ i.venueid }}</td>
+                            <td>{{ i.starttime }}</td>
+                            <td>{{ i.endtime }}</td>
+                            <td>{{ i.status }}</td>
+                            <td><a href="/cancel/{{ i.idbookrequest }}" class="btn btn-error">Cancel</a></td>
+                            <td><a href="/print/booking/{{ i.idbookrequest }}" class="btn btn-success">Print</a></td>
+                          </tr>
+                      {% endfor%}
+                    </table>
+                            </div>
+                        {% else %}
+                    <p class="success"> No bookings yet! </p>
+
+                        {% endif %}
+
+            </div>
+    <div class = "row">
+          <div class="col-lg-12">
+
+          <h2> My Requests </h2>
+          </div>
+    </div>
+             <div class = "row">
+             {% if requests %}
+          <div class="col-lg-12">
+            <table class="table table-striped ">
+              <thead>
+                      <th>Request ID</th>
+                      <th>Equipment ID </th>
+                      <th>Status</th>
+
+                  </thead>
+              {% for i in requests %}
+                  <tr>
+                    <td>{{ i.reqid }}</td>
+                    <td>{{ i.etypeid }}</td>
+                    <td>{{ i.status }}</td>
+                    <td><a href="/print/req/{{ i.reqid }}" class="btn btn-success">Print</a></td>
+
+                  </tr>
+              {% endfor%}
+            </table>
+            </div>
+          {% else %}
+            <p class="success"> No requests yet! </p>
+          {% endif %}
+          
+        </div>
+             {% endif %}
+    </div>
+    </div>
+</div>
+</div>
+    <div id = "myModal" class="modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Select Dates</h4>
+      </div>
+      <div class="modal-body">
+
+        <form class="form" action="" method="post">
+        {% csrf_token %}
+            {% for x in form %}
+                <div class="form group">
+                    <label class="control-label">{{ x.label }}</label>
+                    {{ x }}
+                </div>
+            {% endfor %}
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Print &nbsp<i class="glyphicon glyphicon-print"></i> </button>
+      </div>
+     </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

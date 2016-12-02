@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+
+<div class="container-fluid">
+    <div class="row">
+
+
+        <div class="col-lg-8 col-lg-offset-2">
+            <div class="login-panel panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Please Sign In</h3>
+                </div>
+                <div class="panel-body">
+                    {% if messages %}
+                        <div class="row">
+                        <div class = "col-lg-12">
+                            {% for message in messages %}
+                            <div {% if message.tags %} class="alert alert-dismissable alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}"{% endif %}>
+                             <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong>{{ message }}</strong></div>
+                            {% endfor %}
+                        </div>
+                        </div>
+
+                        {% endif %}
+                    <form method="post" action="{% url 'login' %}">
+{% csrf_token %}
+
+                        <p class="bs-component">
+                            <table>
+                                <tr>
+                                    <td>{{ form.username.label_tag }}</td>
+                                    <td>{{ form.username }}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{ form.password.label_tag }}</td>
+                                    <td>{{ form.password }}</td>
+                                </tr>
+
+                                <tr>
+                                    {% if error %}
+                                        <p style="color: red;">
+                                        Username and Password Don't match
+                                        </p>
+                                    {% endif %}
+                                </tr>
+                            </table>
+                        </p>
+                        <p class="bs-component">
+                            <center>
+                                <input class="btn btn-success btn-sm" type="submit" value="login" />
+                            </center>
+                        </p>
+                        <input type="hidden" name="next" value="{{ next }}" />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+
+
+<script>
+{% if not user.is_authenticated %}
+$("ul.nav.navbar-nav.navbar-right").css("display","none");
+{% endif %}
+</script>
+
+{% endblock %}
