@@ -50,12 +50,12 @@
 									</td>
 								</tr>
 								<tr>
-								{% if user.userprofile.usertype != 'S' %}
+								{% if user.userprofile.userType != 'S' %}
 								<td>Faculty:</td>
 								{% else %}
 								<td>USN:</td>
 								{% endif %}
-									<td style="text-align: left">{{ req.facultyrequest_set.all.0.facultyid }} {{req.studentreq_set.all.0.usn}}
+									<td style="text-align: left">{{ req.facultyrequest_set.all.0.facultyid }} {{req.studentrequest_set.all.0.usn}}
 									</td>
 								</tr>
 								{% if req.venueid %}
