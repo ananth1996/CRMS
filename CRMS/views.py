@@ -43,6 +43,7 @@ class Home(LoginRequiredMixin,TemplateView):
 		elif profile.userType == 'S':
 			booking = Bookrequest.objects.filter(studentbook__usn=profile.student)
 			requests = Resourcereq.objects.filter(studentrequest__usn=profile.student)
+		k = []
 		if len(booking):
 			k = []
 			for b in booking:
