@@ -3,7 +3,7 @@ from django.template import RequestContext
 from django.contrib.auth import authenticate,login,logout
 from django.http import HttpResponse,HttpResponseRedirect
 from django.contrib.auth.mixins import LoginRequiredMixin,UserPassesTestMixin
-from forms import LoginForm,addStudForm,addFacForm
+from forms import LoginForm,addStudForm,addFacForm,addPerForm
 from django.views.generic  import TemplateView
 from .models import Student,UserProfile
 from django.contrib import messages
@@ -98,13 +98,42 @@ class addFac(LoginRequiredMixin,UserPassesTestMixin,TemplateView):
 				return HttpResponseRedirect('/home')
 			except Exception as e:
 
-				form.add_error('usn',e.args[1])
+				form.add_error('facultyid',e.args[1])
 
 		return render(request, 'log/addFac.html', {'form': form})
 
 
 def isAdmin(user):
 	return user.userprofile.userType == 'SA'
+
+
+class addPer(LoginRequiredMixin,UserPassesTestMixin,TemplateView):
+	login_url = '/log/login/'
+
+	def test_func(self):
+		if not isAdmin(self.request.user):
+			messages.error(self.request," Profile {0} Does Not Have The Priviliges to Access This Site. Please Log in with a Valid Profile to Proceed ".format(self.request.user))
+		return isAdmin(self.request.user)
+
+	def get(self, request, *args, **kwargs):
+		form = addPerForm()
+		return render(request,'log/addPer.html',{'form':form})
+
+	def post(self,request):
+		form = addPerForm(request.POST)
+		username = request.POST['username']
+		password = request.POST['password']
+		if form.is_valid():
+			try:
+				user =User.objects.create_user(username=username,password=password)
+				UserProfile.objects.create(user=user,userType='P',priorityLevel=0)
+				messages.success(request,"Sucessfully Added Personnel {0}".format(user))
+				return HttpResponseRedirect('/home')
+			except :
+				form.add_error('username',"Username Already Exists")
+				print form
+
+		return render(request, 'log/addPer.html', {'form': form})
 
 
 

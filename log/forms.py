@@ -44,3 +44,9 @@ class addFacForm(forms.ModelForm):
 		model = Faculty
 		fields = ['name','facultyid','dno']
 
+
+
+class addPerForm(forms.Form):
+
+	password=forms.CharField(min_length=8,max_length=30,widget=forms.PasswordInput(attrs={'class': 'form-control' }))
+	username = forms.CharField(max_length=30,widget=forms.TextInput(attrs={'class': 'form-control'}))
