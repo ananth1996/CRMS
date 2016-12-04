@@ -106,8 +106,8 @@
                             <td>{{ i.starttime }}</td>
                             <td>{{ i.endtime }}</td>
                             <td>{{ i.status }}</td>
-                            <td><a href="/cancel/{{ i.idbookrequest }}" class="btn btn-error">Cancel</a></td>
-                            <td><a href="/print/booking/{{ i.idbookrequest }}" class="btn btn-success">Print</a></td>
+                            <td><a href="/cancel/{{ i.idbookrequest }}" class="btn btn-danger">Cancel</a></td>
+                            <td><a target="_blank" href="/print/booking/{{ i.idbookrequest }}" class="btn btn-success">Print</a></td>
                           </tr>
                       {% endfor%}
                     </table>
@@ -139,7 +139,7 @@
                     <td>{{ i.reqid }}</td>
                     <td>{{ i.etypeid }}</td>
                     <td>{{ i.status }}</td>
-                    <td><a href="/print/req/{{ i.reqid }}" class="btn btn-success">Print</a></td>
+                    <td><a target="_blank" href="/print/req/{{ i.reqid }}" class="btn btn-success">Print</a></td>
 
                   </tr>
               {% endfor%}
@@ -164,7 +164,7 @@
       </div>
       <div class="modal-body">
 
-        <form class="form" action="" method="post">
+        <form class="form" target="_blank" action="" method="post" >
         {% csrf_token %}
             {% for x in form %}
                 <div class="form group">
@@ -176,7 +176,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary">Print &nbsp<i class="glyphicon glyphicon-print"></i> </button>
+        <button type="submit"  class="btn btn-primary">Print &nbsp<i class="glyphicon glyphicon-print"></i> </button>
       </div>
      </form>
     </div>
