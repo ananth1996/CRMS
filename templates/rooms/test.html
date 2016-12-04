@@ -99,7 +99,7 @@
                                 {% if user.userprofile.userType == 'SA' %}
                                 <td><a class="button btn btn-success" href="/rooms/editVenue/{{ model.venueid }}">Edit</a></button> </td>
                                     {% else %}
-                                <td><a class="button btn btn-info" href="/rooms/bookVenue/{{ model.venueid }}{% if filter.data.startdate%}/{{ filter.data.startdate }}{% else %}/{{ now }}{% endif %}{% if filter.data.enddate%}/{{ filter.data.enddate }}{% else %}/{{ now }}{% endif %}">Book Venue</a></button> </td>
+                                <td><a class="button btn btn-info" href="/rooms/bookVenue/{{ model.venueid }}{% if filter.data.startdate%}/{{ filter.data.startdate.split|join:"-" }}{% else %}/{{ now }}{% endif %}{% if filter.data.enddate%}/{{ filter.data.enddate.split|join:"-" }}{% else %}/{{ nexttime }}{% endif %}">Book Venue</a></button> </td>
                                 {% endif %}
 
 

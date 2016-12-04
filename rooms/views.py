@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin,UserPassesTestMixin
 from django.views.generic import  TemplateView,ListView
 from rooms.forms import  venueForm,editForm,equipForm, addDeptFor,bookVenueForm,VenueFilter,inline_equip,Resform
@@ -13,6 +14,8 @@ from django.db.models import Q
 import re
 from django.template import RequestContext
 # Create your views here.
+
+
 
 
 
@@ -155,9 +158,9 @@ class bookVenue(LoginRequiredMixin,TemplateView):
 	login_url = '/log/login/'
 
 	def get(self, request,venue_id,startdate,enddate,*args, **kwargs):
-
-		startdate = datetime.datetime.strptime(startdate,"%Y-%m-%d")
-		enddate = datetime.datetime.strptime(enddate, "%Y-%m-%d")
+		print startdate,enddate
+		startdate = datetime.datetime.strptime(startdate,"%Y-%m-%d-%H:%M:%S")
+		enddate = datetime.datetime.strptime(enddate, "%Y-%m-%d-%H:%M:%S")
 
 		form = bookVenueForm(initial={'venueid':venue_id,'starttime':startdate,'endtime':enddate})
 
@@ -165,6 +168,7 @@ class bookVenue(LoginRequiredMixin,TemplateView):
 
 	def post(self,request,venue_id,startdate,enddate,*args,**kwargs):
 		form = bookVenueForm(data=request.POST)
+		minimum = 1
 		if form.is_valid():
 			booking = form.save(commit=False)
 			booking.status = Bookrequest.PENDING
@@ -188,41 +192,48 @@ class bookVenue(LoginRequiredMixin,TemplateView):
 				messages.info(request,"Did Not Preempt Booking request Not Made")
 				return HttpResponseRedirect('/home')
 
+
+
 			if booking.starttime<=booking.endtime:
-				general_conflicts = FacultyBook.objects.filter(bookid__venueid=booking.venueid,
-												bookid__status=Bookrequest.APPROVED,
-												bookid__starttime__lt=booking.endtime,
-												bookid__endtime__gt=booking.starttime)
+				if booking.endtime - booking.starttime >= datetime.timedelta(hours=minimum):
 
-				#print qs
-				if not general_conflicts :
-					profile = request.user.userprofile
-					#print profile
-					collisions = StudentBook.objects.filter(bookid__venueid=booking.venueid,
-															bookid__status=Bookrequest.APPROVED,
-															bookid__starttime__lt=booking.endtime,
-															bookid__endtime__gt=booking.starttime)
-					#print collisions
-					#If no student collisions also then make request
-					if not collisions:
-						booking.save()
-						if profile.userType == 'F':
-							FacultyBook.objects.create(bookid=booking,facultyid=profile.faculty)
-						elif profile.userType =='S':
-							StudentBook.objects.create(bookid=booking,usn=profile.student)
+					general_conflicts = FacultyBook.objects.filter(bookid__venueid=booking.venueid,
+													bookid__status=Bookrequest.APPROVED,
+													bookid__starttime__lt=booking.endtime,
+													bookid__endtime__gt=booking.starttime)
 
-						messages.success(request,"Booking Request Was Succesfully Made")
-						return HttpResponseRedirect('/home')
-					#If Faculty or Admin give preemption warning if student collisons
-					elif profile.userType == 'SA' or profile.userType == 'F':
-							preempt = collisions[0]
-							return render(request, 'rooms/makeBook.html', {'form': form, 'collision': preempt})
-					#If student
+					#print qs
+					if not general_conflicts :
+						profile = request.user.userprofile
+						#print profile
+						collisions = StudentBook.objects.filter(bookid__venueid=booking.venueid,
+																bookid__status=Bookrequest.APPROVED,
+																bookid__starttime__lt=booking.endtime,
+																bookid__endtime__gt=booking.starttime)
+						#print collisions
+						#If no student collisions also then make request
+						if not collisions:
+							booking.save()
+							if profile.userType == 'F':
+								FacultyBook.objects.create(bookid=booking,facultyid=profile.faculty)
+							elif profile.userType =='S':
+								StudentBook.objects.create(bookid=booking,usn=profile.student)
+
+							messages.success(request,"Booking Request Was Succesfully Made")
+							return HttpResponseRedirect('/home')
+						#If Faculty or Admin give preemption warning if student collisons
+						elif profile.userType == 'SA' or profile.userType == 'F':
+								preempt = collisions[0]
+								return render(request, 'rooms/makeBook.html', {'form': form, 'collision': preempt})
+						#If student
+						else:
+							form.add_error(None,"Cannot Make Request Conflicting Booking Existing ")
+					#If anyone gets conflicting bookings
 					else:
-						form.add_error(None,"Cannot Make Request Conflicting Booking Existing ")
-				#If anyone gets conflicting bookings
+						form.add_error(None, "Cannot Make Request Conflicting Booking Existing ")
+				#If Minimum Time interval is not satisified
 				else:
-					form.add_error(None, "Cannot Make Request Conflicting Booking Existing ")
+					form.add_error('endtime',"Minimumn Time Interval of {0} Hours Not satisfied".format(minimum))
 
 			#If incorrect date time input
 			else:
@@ -235,16 +246,28 @@ class bookVenue(LoginRequiredMixin,TemplateView):
 
 
 def venue_list(request):
+	minimum = 1
 	f = VenueFilter(request.GET, queryset=Venue.objects.all())
 	data = f.data
-	today = datetime.date.today().__str__()
+	today = datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
+	nexttime = datetime.datetime.now()+datetime.timedelta(hours=minimum)
+	nexttime = nexttime.strftime("%Y-%m-%d-%H:%M:%S")
 	if data:
 		if 'startdate' in data and 'enddate' in data :
-			print "YES"
+			try :
+				start = datetime.datetime.strptime(data['startdate'], "%Y-%m-%d %H:%M:%S")
+				end = datetime.datetime.strptime(data['enddate'], "%Y-%m-%d %H:%M:%S")
+				print start, end
+				if end-start     <= datetime.timedelta(hours=minimum):
+					messages.error(request, "Minimum Time Of {0} Hours is  Required Please Check Times ".format(minimum))
+					return render(request, 'rooms/test.html', {'filter': f, 'now': today,'nexttime':nexttime})
+
+			except:
+				pass
+
 			if data['startdate']>data['enddate']:
 				messages.error(request,"Start Date After End Date")
-				return render(request, 'rooms/test.html', {'filter': f, 'now':today})
-
+				return render(request, 'rooms/test.html', {'filter': f, 'now':today,'nexttime':nexttime})
 
 	val=[]
 	#print f.qs
@@ -256,7 +279,7 @@ def venue_list(request):
 
 	details = zip(f.qs,val)
 
-	return render(request, 'rooms/test.html', {'filter': f,'details':details, 'now':today})
+	return render(request, 'rooms/test.html', {'filter': f,'details':details, 'now':today,'nexttime':nexttime})
 
 class appovalView(LoginRequiredMixin,UserPassesTestMixin,ListView):
 	login_url = '/log/login/'
