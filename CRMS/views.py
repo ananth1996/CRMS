@@ -14,7 +14,7 @@ from forms import PrintForm
 
 #@user_passes_test(isAdmin,login_url='/log/login/')
 
-
+import datetime as dt
 class Home(LoginRequiredMixin,TemplateView):
 	login_url = '/log/login/'
 	template_name = 'home.html'
@@ -25,6 +25,12 @@ class Home(LoginRequiredMixin,TemplateView):
 		profile = request.user.userprofile
 		booking = {}
 		requests = {}
+		invalid = Bookrequest.objects.filter(status=Bookrequest.PENDING, starttime__lt=dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+		if invalid:
+			for i in invalid:
+				i.status = Bookrequest.DENIED
+				i.save()
+
 		pendingBook = len(Bookrequest.objects.filter(status=Bookrequest.PENDING))
 		pendingFault = len(Fault.objects.filter(~Q(status=Fault.Done)))
 		pendingReq = len(Resourcereq.objects.filter(status=Resourcereq.PENDING))
