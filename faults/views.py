@@ -83,7 +83,7 @@ class editFault(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
 				qs = VenueEquipment.objects.get(venueid=obj.venueid, etypeid=obj.etype)
 				qs.quantity += 1
 				qs.save()
-
+			obj.save()
 			messages.success(request,'Fault was edited successfully')
 			return HttpResponseRedirect('/home')
 
