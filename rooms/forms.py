@@ -128,7 +128,7 @@ class VenueFilter(django_filters.FilterSet):
 		#setting the filter for Department Number to the filter descibed above
 		self.filters['dno'] = library
 		'''
-		print self.filters['capacity']
+		#print self.filters['capacity']
 
 		#easier Method to add an extra field
 
