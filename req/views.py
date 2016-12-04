@@ -27,10 +27,10 @@ class addEquipReq(LoginRequiredMixin,TemplateView):
 			equipreq = form.save(commit=False)
 			equipreq.status = Resourcereq.PENDING
 			if profile.userType == 'S':
-				a = StudentRequest.objects.filter(reqid__etypeid = equipreq.etypeid,usn=profile.student)
+				a = StudentRequest.objects.filter(reqid__etypeid = equipreq.etypeid,usn=profile.student,reqid__status__in=[Resourcereq.PENDING,Resourcereq.APPROVED])
 				print a
 			if profile.userType == 'F':
-				a = FacultyRequest.objects.filter(reqid__etypeid= equipreq.etypeid,facultyid=profile.faculty)
+				a = FacultyRequest.objects.filter(reqid__etypeid= equipreq.etypeid,facultyid=profile.faculty,reqid__status__in=[Resourcereq.PENDING,Resourcereq.APPROVED])
 				print a
 			if not a :
 				equipreq.save()

@@ -41,9 +41,9 @@ class addFault(LoginRequiredMixin, TemplateView):
 					messages.success(request,"Fault Was Added Successfully")
 					return HttpResponseRedirect('/home')
 				else:
-					form.add_error('etype',"Cannot add fault to "+str(fault.etype)+" as qauntity of iterms present in venue is 0")
+					form.add_error('etype',"Cannot add fault to "+str(fault.etype)+" as qauntity of items present in venue is 0")
 			else:
-				form.add_error('etype',"Equpment "+str(fault.etype)+" is not present in venue "+str(fault.venueid))
+				form.add_error('etype',"Equipment "+str(fault.etype)+" is not present in venue "+str(fault.venueid))
 
 		return render(request, 'faults/addFault.html', {'form': form})
 
@@ -72,7 +72,7 @@ class editFault(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
 		fault = Fault.objects.get(pk = fault_id)
 		if 'delete' in request.POST:
 			fault.delete()
-			messages.success(request,'Fault was deleted sucessfully',extra_tags='alert')
+			messages.success(request,'Fault was deleted sucessfully',)
 			return HttpResponseRedirect('/home')
 
 		form = editFaultForm(request.POST,instance=fault)
