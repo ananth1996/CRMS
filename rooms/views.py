@@ -247,7 +247,7 @@ def venue_list(request):
 
 
 	val=[]
-	print f.qs
+	#print f.qs
 
 	for x in f.qs:
 

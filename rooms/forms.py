@@ -105,7 +105,7 @@ class bookVenueForm(forms.ModelForm):
 
 class VenueFilter(django_filters.FilterSet):
 	equipment = django_filters.ModelChoiceFilter(queryset= Equipment.objects.filter(etypeid__gte=0),method='custom')
-	capacity = django_filters.NumberFilter(lookup_expr='gte')
+	capacity = django_filters.NumberFilter(lookup_expr='gte',min_value=0)
 	startdate = django_filters.DateTimeFilter(name="Date Start",widget=DateTimeWidget(usel10n=True, bootstrap_version=3),method='dateStartFilter')
 	enddate = django_filters.DateTimeFilter(name="Date Start",widget=   DateTimeWidget(usel10n=True, bootstrap_version=3),method='dateEndFilter')
 
@@ -128,6 +128,7 @@ class VenueFilter(django_filters.FilterSet):
 		#setting the filter for Department Number to the filter descibed above
 		self.filters['dno'] = library
 		'''
+		print self.filters['capacity']
 
 		#easier Method to add an extra field
 
