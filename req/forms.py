@@ -11,7 +11,8 @@ class EquipReqForm(forms.ModelForm):
 		#venue_id = kwargs.pop('venue_id',None)
 		super(EquipReqForm, self).__init__(*args, **kwargs)
 		#self.fields['venueid'].queryset = Venue.objects.filter(dno=Venue.objects.get(pk=venue_id).dno)
-		self.fields['reqid'].label = "Equipment Booking ID"
+		self.fields['reqid'].label = "Resource Booking ID"
+		self.fields['etypeid'].label = "Resource"
 		reqid=Resourcereq.objects.order_by('-reqid')
 
 
