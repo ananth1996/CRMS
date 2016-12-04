@@ -7,6 +7,7 @@ from datetimewidget.widgets import DateTimeWidget,DateWidget
 from django_filters import widgets
 import django_filters
 from datetime import timedelta
+import datetime as dt
 
 
 class venueForm(forms.ModelForm):
@@ -97,7 +98,7 @@ class bookVenueForm(forms.ModelForm):
 		model = Bookrequest
 		fields=['idbookrequest','venueid','starttime','endtime']
 		widgets={'starttime': DateTimeWidget(usel10n=True, bootstrap_version=3,options={'startDate':dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),'todayBtn':'true'}),
--				'endtime': DateTimeWidget(usel10n=True, bootstrap_version=3,options={'startDate':dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),'todayBtn':'true'}) }
+				'endtime': DateTimeWidget(usel10n=True, bootstrap_version=3,options={'startDate':dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),'todayBtn':'true'}) }
 
 
 
