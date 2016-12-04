@@ -278,6 +278,13 @@ class appovalView(LoginRequiredMixin,UserPassesTestMixin,ListView):
 		return queryset
 
 	def random(self, request, *args, **kwargs):
+		invalid = Bookrequest.objects.filter(status=Bookrequest.PENDING,
+											 starttime__lt=dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+		if invalid:
+			for i in invalid:
+				i.status = Bookrequest.DENIED
+				i.save()
+
 		pending = Bookrequest.objects.filter(status=Bookrequest.PENDING)
 		venues = Venue.objects.filter(bookrequest__status=Bookrequest.PENDING).distinct()
 		print venues
@@ -336,6 +343,13 @@ class approvalVenue(LoginRequiredMixin,UserPassesTestMixin,ListView):
 
 	def get(self, request, *args, **kwargs):
 		print self.request.GET
+		invalid = Bookrequest.objects.filter(status=Bookrequest.PENDING,
+											 starttime__lt=dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+		if invalid:
+			for i in invalid:
+				i.status = Bookrequest.DENIED
+				i.save()
+
 		qs =self.get_queryset(*args,**kwargs)
 		#print qs
 		if 'Approve' in self.request.GET:
