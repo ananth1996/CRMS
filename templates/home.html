@@ -107,7 +107,7 @@
                             <td>{{ i.starttime }}</td>
                             <td>{{ i.endtime }}</td>
                             <td>{{ i.status }}</td>
-                            <td><a href="/cancel/{{ i.idbookrequest }}" class="btn btn-danger" {% if j %} {% else %}disabled{% endif %} }>Cancel</a></td>
+                            <td><a href={% if j %}"/cancel/{{ i.idbookrequest }}"{% else %}"#"{% endif %} class="btn btn-danger" {% if j %} {% else %}disabled{% endif %} }>Cancel</a></td>
                             <td><a target="_blank" href="/print/booking/{{ i.idbookrequest }}" class="btn btn-success">Print</a></td>
                           </tr>
                       {% endfor%}
