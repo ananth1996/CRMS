@@ -91,9 +91,9 @@ TEMPLATES = [
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'r3ms',
-	'USER':'root',
-	'PASSWORD':'root',
+        'NAME': 'mydb',
+	'USER':'ananth',
+	'PASSWORD':'admin123',
 	'HOST':'localhost',
 	'PORT': '',
     }
@@ -133,3 +133,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'django.contrib.auth.backends.AllowAllUsersModelBackend',
+    )

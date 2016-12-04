@@ -41,11 +41,14 @@
                                 </tr>
 
                                 <tr>
-                                    {% if error %}
+                                    {% if form.non_field_errors %}
+                                        {% for x in form.non_field_errors %}
                                         <p style="color: red;">
-                                        Username and Password Don't match
+                                            {{ x }}
                                         </p>
+                                        {% endfor %}
                                     {% endif %}
+
                                 </tr>
                             </table>
                         </p>

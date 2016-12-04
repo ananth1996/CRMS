@@ -11,7 +11,7 @@ from log.models import Department,Student,Faculty
 class Venue(models.Model):
 	venueid = models.IntegerField(db_column='VenueID', primary_key=True)  # Field name made lowercase.
 	venuename = models.CharField(db_column='VenueName', max_length=45, blank=True, null=True)  # Field name made lowercase.
-	dno = models.ForeignKey(Department, models.DO_NOTHING, db_column='DNo', blank=True, null=True)  # Field name made lowercase.
+	dno = models.ForeignKey(Department, models.CASCADE, db_column='DNo', blank=True, null=True)  # Field name made lowercase.
 	capacity = models.IntegerField(db_column='Capacity', blank=True, null=True)  # Field name made lowercase.
 
 	class Meta:
@@ -76,7 +76,7 @@ class Bookrequest(models.Model):
 
 
 class StudentBook(models.Model):
-	usn = models.ForeignKey(Student, models.DO_NOTHING, db_column='USN')  # Field name made lowercase.
+	usn = models.ForeignKey(Student,on_delete=models.CASCADE, db_column='USN')  # Field name made lowercase.
 	bookid = models.ForeignKey(Bookrequest, db_column='idBookRequest',on_delete=models.CASCADE)  # Field name made lowercase.
 
 	class Meta:
@@ -89,7 +89,7 @@ class StudentBook(models.Model):
 
 
 class FacultyBook(models.Model):
-	facultyid = models.ForeignKey(Faculty, models.DO_NOTHING, db_column='FacultyID')  # Field name made lowercase.
+	facultyid = models.ForeignKey(Faculty,on_delete=models.CASCADE, db_column='FacultyID')  # Field name made lowercase.
 	bookid = models.ForeignKey(Bookrequest,db_column='idBookRequest',on_delete=models.CASCADE)  # Field name made lowercase.
 
 	class Meta:

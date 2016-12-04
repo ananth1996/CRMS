@@ -18,8 +18,8 @@ class Fault(models.Model):
 	)
 
 	idfault = models.IntegerField(db_column='idFault', primary_key=True)  # Field name made lowercase.
-	venueid = models.ForeignKey(Venue, models.DO_NOTHING, db_column='VenueID', blank=True, null=True)  # Field name made lowercase.
-	etype = models.ForeignKey(Equipment, models.DO_NOTHING, db_column='etype', blank=True, null=True)
+	venueid = models.ForeignKey(Venue, models.CASCADE, db_column='VenueID', blank=True, null=True)  # Field name made lowercase.
+	etype = models.ForeignKey(Equipment, models.CASCADE, db_column='etype', blank=True, null=True)
 	status = models.CharField(db_column='Status', max_length=45, blank=True, null=True,choices=STATUS_OPTIONS,default=Pen)  # Field name made lowercase.
 
 	class Meta:
