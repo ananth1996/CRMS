@@ -7,7 +7,6 @@ from datetimewidget.widgets import DateTimeWidget,DateWidget
 from django_filters import widgets
 import django_filters
 from datetime import timedelta
-import datetime as dt
 
 
 class venueForm(forms.ModelForm):
@@ -41,7 +40,6 @@ class editForm(forms.ModelForm):
 		super(editForm, self).__init__(*args, **kwargs)
 		self.fields['venuename'].disabled = True
 		self.fields['capacity'].required = True
-		self.fields['capacity'] = forms.IntegerField(min_value=1)
 
 
 class equipForm(forms.ModelForm):
@@ -98,8 +96,8 @@ class bookVenueForm(forms.ModelForm):
 	class Meta:
 		model = Bookrequest
 		fields=['idbookrequest','venueid','starttime','endtime']
-		widgets={'starttime': DateTimeWidget(usel10n=True, bootstrap_version=3,options={'startDate':dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),'todayBtn':'true'}),
-				'endtime': DateTimeWidget(usel10n=True, bootstrap_version=3,options={'startDate':dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),'todayBtn':'true'})
+		widgets={'starttime': DateTimeWidget(usel10n=True, bootstrap_version=3),
+				'endtime': DateTimeWidget(usel10n=True, bootstrap_version=3)
 				 }
 
 
@@ -107,9 +105,9 @@ class bookVenueForm(forms.ModelForm):
 
 class VenueFilter(django_filters.FilterSet):
 	equipment = django_filters.ModelChoiceFilter(queryset= Equipment.objects.filter(etypeid__gte=0),method='custom')
-	capacity = django_filters.NumberFilter(lookup_expr='gte')
-	startdate = django_filters.DateTimeFilter(name="Date Start",widget=DateTimeWidget(usel10n=True, bootstrap_version=3,options={'todayBtn':'true'}),method='dateStartFilter')
-	enddate = django_filters.DateTimeFilter(name="Date End",widget=   DateTimeWidget(usel10n=True, bootstrap_version=3,options={'todayBtn':'true'}),method='dateEndFilter')
+	capacity = django_filters.NumberFilter(lookup_expr='gte',min_value=0)
+	startdate = django_filters.DateTimeFilter(name="Date Start",widget=DateTimeWidget(usel10n=True, bootstrap_version=3),method='dateStartFilter')
+	enddate = django_filters.DateTimeFilter(name="Date Start",widget=   DateTimeWidget(usel10n=True, bootstrap_version=3),method='dateEndFilter')
 
 	def __init__(self, *args, **kwargs):
 		super(VenueFilter, self).__init__(*args, **kwargs)
@@ -130,6 +128,7 @@ class VenueFilter(django_filters.FilterSet):
 		#setting the filter for Department Number to the filter descibed above
 		self.filters['dno'] = library
 		'''
+		#print self.filters['capacity']
 
 		#easier Method to add an extra field
 
