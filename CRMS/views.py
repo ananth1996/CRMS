@@ -11,6 +11,7 @@ import datetime
 from django.contrib import messages
 from django.db.models import Q
 from forms import PrintForm
+from django.utils import timezone
 
 #@user_passes_test(isAdmin,login_url='/log/login/')
 
@@ -42,8 +43,18 @@ class Home(LoginRequiredMixin,TemplateView):
 		elif profile.userType == 'S':
 			booking = Bookrequest.objects.filter(studentbook__usn=profile.student)
 			requests = Resourcereq.objects.filter(studentrequest__usn=profile.student)
-
-		return render(request,'home.html',{'booking':booking,'requests':requests,'form':form,'badges':badges})
+		if len(booking):
+			k = []
+			for b in booking:
+				if b.endtime < timezone.now():
+					k.append(False)
+					continue
+				if b.status == Bookrequest.PENDING or b.status== Bookrequest.APPROVED:
+					k.append(True)
+				else:
+					k.append(False)
+		cancellable = zip(booking,k)
+		return render(request,'home.html',{'booking':booking,'requests':requests,'form':form,'badges':badges,'cancellable':cancellable})
 
 	def post(self,request):
 		starttime = request.POST['starttime']
