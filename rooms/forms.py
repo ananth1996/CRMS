@@ -6,6 +6,7 @@ from django.contrib.admin.widgets import AdminSplitDateTime
 from datetimewidget.widgets import DateTimeWidget,DateWidget
 from django_filters import widgets
 import django_filters
+from datetime import timedelta
 import datetime as dt
 
 
@@ -96,26 +97,18 @@ class bookVenueForm(forms.ModelForm):
 	class Meta:
 		model = Bookrequest
 		fields=['idbookrequest','venueid','starttime','endtime']
-		widgets={'starttime': DateTimeWidget(usel10n=True, bootstrap_version=3),
-				'endtime': DateTimeWidget(usel10n=True, bootstrap_version=3)
-				 }
+		widgets={'starttime': DateTimeWidget(usel10n=True, bootstrap_version=3,options={'startDate':dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),'todayBtn':'true'}),
+				'endtime': DateTimeWidget(usel10n=True, bootstrap_version=3,options={'startDate':dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),'todayBtn':'true'}) }
 
 
 
 
 class VenueFilter(django_filters.FilterSet):
-	dateTimeOptions = {
-
-		'startDate':dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-		'todayBtn':'true',
-		'autoclose':True,
-	}
-	print dt.datetime.today()
 	equipment = django_filters.ModelChoiceFilter(queryset= Equipment.objects.filter(etypeid__gte=0),method='custom')
 	capacity = django_filters.NumberFilter(lookup_expr='gte',min_value=0)
-	startdate = django_filters.DateTimeFilter(name="Date Start",widget=DateTimeWidget(usel10n=True, bootstrap_version=3,options=dateTimeOptions),method='dateStartFilter')
-	enddate = django_filters.DateTimeFilter(name="Date Start",widget=   DateTimeWidget(usel10n=True, bootstrap_version=3),method='dateEndFilter')
-	print startdate.widget
+	startdate = django_filters.DateTimeFilter(name="Date Start",widget=DateTimeWidget(usel10n=True, bootstrap_version=3,options={'todayBtn':'true'}),method='dateStartFilter')
+	enddate = django_filters.DateTimeFilter(name="Date Start",widget=   DateTimeWidget(usel10n=True, bootstrap_version=3,options={'todayBtn':'true'}),method='dateEndFilter')
+
 	def __init__(self, *args, **kwargs):
 		super(VenueFilter, self).__init__(*args, **kwargs)
 		#getting the options for departmets

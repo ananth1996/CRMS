@@ -25,7 +25,7 @@ class Resourcereq(models.Model):
 		db_table = 'resourcereq'
 
 	def __unicode__(self):
-		return "Resourse Request {0} for {1}".format(self.reqid,self.etypeid)
+		return "Resource Request {0} for {1}".format(self.reqid,self.etypeid)
 
 
 

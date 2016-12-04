@@ -3,17 +3,18 @@
 <!DOCTYPE html>
 <html>
     <head>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
  <!--   <link href="{{ STATIC_ROOT }}css/bootstrap.css" rel="stylesheet" type="text/css"/>-->
-    <script src = {% static 'js/jquery.min.js' %}></script>
-    <!--<script src="{{ STATIC_ROOT }}js/bootstrap.js"></script>-->
+        <script src = {% static 'js/jquery.min.js' %}></script>
         {{ form.media }}
         {{ filter.form.media }}
+                   <!-- Core CSS - Include with every page -->
+        <link href="{% static 'css/bootstrap.yeti.min.css' %}" rel="stylesheet" type='text/css' >
+
         <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 <title>RVCE Room and Resource Manager</title>
-                <!-- Core CSS - Include with every page -->
-                <link href="{% static 'css/bootstrap.yeti.min.css' %}" rel="stylesheet" type='text/css' >
                 </head>
                 <body>
                     <nav class="navbar navbar-default  navbar-inverse">
